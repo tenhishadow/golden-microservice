@@ -38,3 +38,26 @@ Check on status port:
 curl 127.0.0.1:8081/status
 OK
 ```
+
+## Example run in Docker
+
+```bash
+docker run -d -P \
+  -e ENV=prod \
+  -e CLUSTER=eu-lalala-west \
+  -e VARS_LIST="ENV,CLUSTER,HOSTNAME,PYTHON_VERSION,HOME" \
+  c6261ce3422a
+```
+
+Check on traffic port:
+
+```bash
+golden-microservice
+Listen on port 8080
+ENV to show:
+ENV is prod
+CLUSTER is eu-lalala-west
+HOSTNAME is 47bb23bb7bf5
+PYTHON_VERSION is 3.13.1
+HOME is /home/app
+```
