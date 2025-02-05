@@ -46,7 +46,7 @@ docker run -d -P \
   -e ENV=prod \
   -e CLUSTER=eu-lalala-west \
   -e VARS_LIST="ENV,CLUSTER,HOSTNAME,PYTHON_VERSION,HOME" \
-  c6261ce3422a
+  ghcr.io/tenhishadow/golden-microservice:latest
 ```
 
 Check on traffic port:
