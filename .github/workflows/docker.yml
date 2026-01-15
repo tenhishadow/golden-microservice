@@ -1,24 +1,24 @@
----
-
 name: docker
 
 on:
   push:
     branches:
       - "main"
+    tags:
+      - "v*"          # release-please обычно делает vX.Y.Z; при желании замените на "*"
     paths-ignore:
-      - '.gitignore'
-      - 'LICENSE'
-      - 'README.md'
+      - ".gitignore"
+      - "LICENSE"
+      - "README.md"
   pull_request:
     branches:
       - "main"
     paths-ignore:
-      - '.gitignore'
-      - 'LICENSE'
-      - 'README.md'
+      - ".gitignore"
+      - "LICENSE"
+      - "README.md"
   schedule:
-    - cron: '0 0 * * 0'
+    - cron: "0 0 * * 0"
 
 env:
   REGISTRY: ghcr.io
@@ -30,26 +30,48 @@ jobs:
     permissions:
       contents: read
       packages: write
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
+
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Log in to the Container registry
-        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
         with:
-          registry: ghcr.io
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          flavor: |
+            latest=auto
+          tags: |
+            type=ref,event=tag
+            type=ref,event=branch
+            type=ref,event=pr,prefix=pr-
+            type=sha,prefix=sha-,enable=${{ !startsWith(github.ref, 'refs/tags/') }}
+
+      - name: Log in to the Container registry
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v4
+
+      - name: Build (push only on tag)
+        uses: docker/build-push-action@v6
         with:
-          # context: golden-microservice
-          push: ${{ startsWith(github.ref, 'refs/tags/') }}
-          tags: |
-            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
-            ghcr.io/${{ github.repository }}:latest
+          cache-from: type=gha
+          cache-to:   type=gha,mode=max
+          context:    .
+          labels:     ${{ steps.meta.outputs.labels }}
+          provenance: ${{ startsWith(github.ref, 'refs/tags/') }}
+          push:       ${{ startsWith(github.ref, 'refs/tags/') }}
+          sbom:       ${{ startsWith(github.ref, 'refs/tags/') }}
+          tags:       ${{ steps.meta.outputs.tags }}
