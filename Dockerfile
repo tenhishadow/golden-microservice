@@ -1,14 +1,25 @@
 FROM python:3-alpine
 
-ENV APP_PORT_TRAFFIC=8080
-ENV APP_PORT_STATUS=8081
+ENV APP_PORT_TRAFFIC="8080" \
+    APP_PORT_STATUS="8081"
 
-RUN addgroup --system app \
- && adduser --system --ingroup app app
+ARG APP_USER="app" \
+    APP_GROUP="app" \
+    APP_GROUP_ID="10001" \
+    APP_USER_ID="10001" \
+    APP_DATA="/app"
 
-USER app
-WORKDIR /app
-COPY --chown=app:app main.py main.py
+RUN addgroup -S -g ${APP_GROUP_ID} ${APP_GROUP} \
+ && adduser  -S -D -H -u ${APP_USER_ID} -G ${APP_GROUP} -s /sbin/nologin ${APP_USER}
+
+USER ${APP_USER}
+WORKDIR ${APP_DATA}
+COPY --chown=${APP_USER}:${APP_GROUP} main.py main.py
+COPY --chown=${APP_USER}:${APP_GROUP} health.py /usr/local/bin/health.py
 
 EXPOSE ${APP_PORT_TRAFFIC} ${APP_PORT_STATUS}
+
+HEALTHCHECK --interval=10s --timeout=3s --start-period=10s --retries=3 \
+  CMD python3 /usr/local/bin/health.py
+
 CMD ["python3", "main.py"]
