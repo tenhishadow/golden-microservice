@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: mikrotik-lb
+  name: mikrotik-lb
+spec:
+  selector:
+    matchLabels:
+      app: mikrotik-lb
+  template:
+    metadata:
+      labels:
+        app: mikrotik-lb
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+    spec:
+      terminationGracePeriodSeconds: 1
+      securityContext:
+        runAsUser:  10001
+        runAsGroup: 10001
+        fsGroup:    10001
+      automountServiceAccountToken: false
+      containers:
+        - name: server
+          image: "ghcr.io/tenhishadow/golden-microservice:latest"
+          env:
+            - name: DISABLE_HEALTH_LOGS
+              value: true
+              # hide logs for healthcheck
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu:    "10m"
+            limits:
+              memory: "48Mi"
+              cpu:    "50m"
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 8080
+              name:          traffic
+              protocol:      TCP
+            - containerPort: 8081
+              name:          health
+              protocol:      TCP
+          startupProbe:
+            httpGet:
+              path:   /healthz
+              port:   health
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds:       5
+            timeoutSeconds:      3
+            failureThreshold:    24
+            successThreshold:    1
+          readinessProbe:
+            httpGet:
+              path:   /
+              port:   traffic
+              scheme: HTTP
+            periodSeconds:    10
+            timeoutSeconds:   3
+            failureThreshold: 3
+            successThreshold: 1
+          livenessProbe:
+            httpGet:
+              path:   /healthz
+              port:   health
+              scheme: HTTP
+            periodSeconds:    30
+            timeoutSeconds:   3
+            failureThreshold: 3
+            successThreshold: 1
