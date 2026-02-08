@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.1](https://github.com/tenhishadow/golden-microservice/compare/v1.1.0...v1.1.1) (2026-02-08)
+
+
+### Features
+
+* **k8s:** add mikrotik-lb DaemonSet and Service manifests ([c3aa898](https://github.com/tenhishadow/golden-microservice/commit/c3aa8988f21ece2e13e6a7c8dad43061f650f71c))
+* **k8s:** add mikrotik-lb DaemonSet manifest and harden runtime ([#9](https://github.com/tenhishadow/golden-microservice/issues/9)) ([c3aa898](https://github.com/tenhishadow/golden-microservice/commit/c3aa8988f21ece2e13e6a7c8dad43061f650f71c))
+
+
+### Performance Improvements
+
+* **docker:** start python with -S -OO ([c3aa898](https://github.com/tenhishadow/golden-microservice/commit/c3aa8988f21ece2e13e6a7c8dad43061f650f71c))
+
 ## [1.1.0](https://github.com/tenhishadow/golden-microservice/compare/v1.0.0...v1.1.0) (2026-02-08)
 
 
