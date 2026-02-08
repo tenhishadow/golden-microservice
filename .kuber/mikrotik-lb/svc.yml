@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mikrotik-lb
+spec:
+  selector:
+    app: mikrotik-lb
+  type: NodePort
+  ports:
+    - port:       8080
+      protocol:   TCP
+      targetPort: 8080
+      nodePort:   30081
