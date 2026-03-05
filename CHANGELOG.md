@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/tenhishadow/golden-microservice/compare/v1.1.1...v1.1.2) (2026-03-05)
+
+
+### Miscellaneous Chores
+
+* **deps:** update docker/setup-qemu-action action to v4 ([#15](https://github.com/tenhishadow/golden-microservice/issues/15)) ([eb8b0c5](https://github.com/tenhishadow/golden-microservice/commit/eb8b0c56772e7514e00611e9cf231a0e13239194))
+
 ## [1.1.1](https://github.com/tenhishadow/golden-microservice/compare/v1.1.0...v1.1.1) (2026-02-08)
 
 
