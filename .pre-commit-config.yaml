@@ -36,12 +36,12 @@ repos:
       - id: detect-secrets
         # exclude: xxx
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: v1.23.1
+    rev: v1.26.1
     hooks:
       - id: zizmor
         args: ["-c", ".zizmor.yml"]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.5
+    rev: v0.15.20
     hooks:
       - id: ruff-check
         args: [ --fix ]
