@@ -2,6 +2,8 @@
 
 A tiny, stdlib-only Python container for Docker and Kubernetes smoke tests.
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/tenhishadow/golden-microservice)
+
 ## Executive summary
 
 - Purpose: a predictable "known good" HTTP workload for platform validation.
